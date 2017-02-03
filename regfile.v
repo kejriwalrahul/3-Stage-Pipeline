@@ -6,18 +6,18 @@
 */
 
 module RegisterFile(
-	input[3:0] srcReg1,
-	input[3:0] srcReg2,
-	input[3:0] nextDestReg,
-	
-	input[3:0] destReg,
-	input[15:0] destVal,
-	
-	output[15:0] srcRegVal1,
-	output[15:0] srcRegVal2,
-	output inuse1,
-	output inuse2
-);
+		input[3:0] srcReg1,
+		input[3:0] srcReg2,
+		input[3:0] nextDestReg,
+		
+		input[3:0] destReg,
+		input[15:0] destVal,
+		
+		output[15:0] srcRegVal1,
+		output[15:0] srcRegVal2,
+		output inuse1,
+		output inuse2
+	);
 	
 	// Array of Registers 
 	reg[15:0] r[0:15];
