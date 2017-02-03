@@ -4,6 +4,22 @@ A Three Stage Pipeline 16-bit processor implemented in Verilog
 Find tentative design at:
 https://docs.google.com/presentation/d/1UTbuw8olqJFvrFJ2w_zIRk5LXlS1WgDOVkUarwExFcI/edit?usp=sharing
 
+## Instruction Format
+
+For non-LOAD/STORE instructions
+
+    +-----+----+----+----+
+    |Instr|Src1|Src2|Dest|
+    +-----+----+----+----+
+    -4bits-4bit-4bit-4bit-
+
+For LOAD/STORE instructions
+
+    +-----+----------+----+
+    |Instr|MemoryAddr|Dest|
+    +-----+----------+----+
+    -4bits-  8 bits  -4bit-
+
 ## Ports.io
 
 ### Fetch Instruction Unit
