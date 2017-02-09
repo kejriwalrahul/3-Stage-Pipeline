@@ -7,6 +7,7 @@
 
 module decodeAndFetchOperands(
 		input clk,
+		input rst,
 
 		// Input from Fetch Instruction unit
 		input[15:0] instr,
@@ -43,16 +44,69 @@ module decodeAndFetchOperands(
 	reg[ 7:0] memAddr;
 	reg used1, used2;
 
-	always @(posedge clk) begin
-		nextDestReg = instr[8+:4]
-		srcReg1 = instr[4+:4]
-		srcReg2 = instr[0+:4]
+	/*
+		Zero all registers at start
+	*/
+	initial begin
+		srcReg1 	= 4'b0; 	
+		srcReg2 	= 4'b0; 	
+		nextDestReg = 4'b0; 	
 	
-
+		opcode 		= 4'b0;
+		destReg		= 4'b0;
+		srcVal1		= 16'b0;
+		srcVal2		= 16'b0;
+		memAddr		= 8'b0;
+		used1		= 0;
+		used2		= 0;		
 	end
 
-	always @(srcRegVal1 or srcRegVal2 or inuse1 or inuse2) begin
+	/*
+		Zero all registers on reset
+	*/
+	always @(posedge rst) begin
+		srcReg1 	= 4'b0; 	
+		srcReg2 	= 4'b0; 	
+		nextDestReg = 4'b0; 	
+	
+		opcode 		= 4'b0;
+		destReg		= 4'b0;
+		srcVal1		= 16'b0;
+		srcVal2		= 16'b0;
+		memAddr		= 8'b0;
+		used1		= 0;
+		used2		= 0;
+	end
 
+	/*
+		Operation Logic
+	*/
+	always @(posedge clk) begin
+		opcode 		= instr[ 0+:4];
+
+		// If LOAD/STORE instruction
+		if(opcode == 4'b1111 || opcode == 4'b1110) begin
+			memAddr		= instr[ 4+:8];
+			nextDestReg = instr[12+:4];
+			destReg 	= instr[12+:4];
+		end
+		// For other instructions
+		else begin
+			nextDestReg = instr[ 4+:4];
+			destReg 	= instr[ 4+:4];
+			srcReg1 	= instr[ 8+:4];
+			srcReg2 	= instr[12+:4];
+		end
+	end
+
+	/*
+		On Feedback from Register File
+	*/
+	always @(srcRegVal1 or srcRegVal2 or inuse1 or inuse2) begin
+		srcVal1 = srcRegVal1;
+		srcVal2 = srcRegVal2;
+		used1   = inuse1;
+		used2   = inuse2;
 	end
 
 endmodule
