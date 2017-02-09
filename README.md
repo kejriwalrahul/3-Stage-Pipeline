@@ -12,7 +12,7 @@ A Three Stage Pipeline 16-bit processor implemented in Verilog
 For non-LOAD/STORE instructions
 
     +-----+----+----+----+
-    |Instr|Src1|Src2|Dest|
+    |Instr|Dest|Src1|Src2|
     +-----+----+----+----+
     -4bits-4bit-4bit-4bit-
 
