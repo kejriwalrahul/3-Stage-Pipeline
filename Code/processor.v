@@ -5,10 +5,10 @@
 	Top Level Module for the Processor
 */
 
-`include "fetch.v"
-`include "decoder.v"
-`include "regfile.v"
-`include "execute.v"
+`include "Code/fetch.v"
+`include "Code/decoder.v"
+`include "Code/regfile.v"
+`include "Code/execute.v"
 
 module Processor(
 		input clk,
