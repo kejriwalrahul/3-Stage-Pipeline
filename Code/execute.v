@@ -105,39 +105,49 @@ module executeAndStoreBack(
 
 			// SL
 			 5: {ProcessorStatusWord[15],destVal} = val1 << val2;
+
+			 	if(destVal == 0)
+					ProcessorStatusWord[13] = 1;	
 			 
 			// SR
 			 6: {ProcessorStatusWord[15],destVal} = val1 >> val2;
+
+			 	if(destVal == 0)
+					ProcessorStatusWord[13] = 1;	
 			 
 			// AND
 			 7: destVal = val1 & val2;
+
+			 	if(destVal == 0)
+					ProcessorStatusWord[13] = 1;	
 			 
 			// OR
 			 8: destVal = val1 | val2;
+
+			 	if(destVal == 0)
+					ProcessorStatusWord[13] = 1;	
 			 
 			// NOT
 			 9: // ignores val2
 			 	destVal = ~val1;
+
+			 	if(destVal == 0)
+					ProcessorStatusWord[13] = 1;	
 			
 			// XOR
 			10: destVal = val1 ^ val2;
-			
-			// Free instruction
-			11: // Doing nothing
-			
-			// Free instruction
-			12: // Doing nothing
-			
-			// Free instruction
-			13: // Doing nothing
-			
+
+			 	if(destVal == 0)
+					ProcessorStatusWord[13] = 1;	
+
 			// LOAD
 			14: memAddrLoadStore = memAddr;
+			 	if(destVal == 0)
+					ProcessorStatusWord[13] = 1;	
 
-			
 			// STORE
-			15:
-			
+			15: memAddrLoadStore = memAddr;
+				memValueStore = val1;
 			
 			default: $display("Failure in execute unit!");
 		endcase

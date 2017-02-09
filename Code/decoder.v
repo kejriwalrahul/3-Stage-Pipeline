@@ -84,11 +84,20 @@ module decodeAndFetchOperands(
 	always @(posedge clk) begin
 		opcode 		= instr[ 0+:4];
 
-		// If LOAD/STORE instruction
-		if(opcode == 4'b1111 || opcode == 4'b1110) begin
+		// If LOAD instruction
+		if(opcode == 4'b1110) begin
 			memAddr		= instr[ 4+:8];
 			nextDestReg = instr[12+:4];
 			destReg 	= instr[12+:4];
+		end
+		// If STORE instruction
+		else if(opcode == 4'b1111) begin
+			memAddr		= instr[ 4+:8];
+			nextDestReg = instr[12+:4];
+			destReg 	= instr[12+:4];			
+
+			// Send addr to regfile
+			srcReg1 	= instr[12+:4];
 		end
 		// For other instructions
 		else begin
