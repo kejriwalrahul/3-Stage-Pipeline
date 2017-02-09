@@ -2,7 +2,7 @@
 	Module written by Rahul Kejriwal
 	CS14B023
 
-	Synchronous module
+	Synchronous module to decode instructions and fetch register values
 */
 
 module decodeAndFetchOperands(

@@ -14,31 +14,40 @@ module Processor(
 
 		output[ 7:0] memAddrLoadStore,
 		output[15:0] memStoreVal,
-		input[ 15:0] memLoadVal
+		input[ 15:0] memLoadVal,
+
+		input valueReady,
+		output readReq,
+
+		output powerdown
 	);
 	
 	reg[15:0] PSW;
 
 	// Fetch Unit	
-	fetchInstruction(clk, rst, instr_addr, instr, curr_instr);	
+	fetchInstruction I(clk, rst, instr_addr, instr, curr_instr);	
 	
 	// Decode Unit
-	decodeAndFetchOperands(clk, rst,
+	decodeAndFetchOperands D(clk, rst,
 		curr_instr, 
 		srcRegVal1, srcRegVal2, inuse1, inuse2,
 		srcReg1, srcReg2, nextDestReg,
 		opcode, destReg, srcVal1, srcVal2, memAddr, used1, used2);
 	
 	// Register File
-	RegisterFile(clk, rst
+	RegisterFile R(clk, rst
 		srcReg1, srcReg2, nextDestReg,
-		destRegStore, destVal,
+		destRegStore, destVal, storeNow, storeDone,
 		srcRegVal1, srcRegVal2, inuse1, inuse2);
 	
 	//Execute Unit
-	executeAndStoreBack(clk, rst
+	executeAndStoreBack E(clk, rst
 		opcode, destReg, srcVal1, srcVal2, memAddr, used1, used2,
-		destRegStore, destVal, memAddrLoadStore, memStoreVal, memLoadVal, pswWire);
+		destRegStore, destVal, storeNow, storeDone,
+		memAddrLoadStore, memStoreVal,
+		memLoadVal, valueReady, readReq,
+		pswWire, 
+		powerdown);
 
 	initial begin
 		PSW = 16'b0;

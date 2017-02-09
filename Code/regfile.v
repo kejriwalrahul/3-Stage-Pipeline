@@ -15,6 +15,8 @@ module RegisterFile(
 		
 		input[3:0] destReg,
 		input[15:0] destVal,
+		input storeNow,
+		output storeDone,
 		
 		output[15:0] srcRegVal1,
 		output[15:0] srcRegVal2,
@@ -30,10 +32,10 @@ module RegisterFile(
 	reg[15:0] srcRegVal1, srcRegVal2;
 	reg inuse1, inuse2;
 
+	reg storeDone;
+
 	/*
 		For loop initialization
-		
-		Possible issue: What does this synthesize to?
 	*/
 	integer i;
 
@@ -50,6 +52,8 @@ module RegisterFile(
 		srcRegVal2 = 16'b0;
 		inuse1 = 0;
 		inuse2 = 0;
+		
+		storeDone = 0;
 	end
 
 	/*
@@ -65,6 +69,7 @@ module RegisterFile(
 		srcRegVal2 = 16'b0;
 		inuse1 = 0;
 		inuse2 = 0;
+		storeDone = 0;
 	end
 
 	/*
@@ -94,8 +99,10 @@ module RegisterFile(
 	
 		Fix: Done
 	*/
-	always @(destReg) begin
+	always @(posedge storeNow) begin
+		storeDone = 0;
 		r[destReg] = destVal;
+		storeDone = 1;
 	end
 
 endmodule
