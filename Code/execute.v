@@ -173,7 +173,10 @@ module executeAndStoreBack(
 					memValueStore = val1;
 				end
 
-			default: $display("Failure in execute unit!");
+			default:begin
+					$display("Failure in execute unit!");
+					powerdown = 1;
+					end
 		endcase
 
 		// Set register address to write to and send signal to write to reg file

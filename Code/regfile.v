@@ -54,6 +54,14 @@ module RegisterFile(
 		inuse2 = 0;
 		
 		storeDone = 0;
+		$monitor($time,, {"Regs:",
+			"\n 0:%x %b, 1:%x %b, 2:%x %b, 3:%x %b, 4:%x %b,",
+			"\n 5:%x %b, 6:%x %b, 7:%x %b, 8:%x %b,",
+			"\n 9:%x %b, 10:%x %b, 11:%x %b, 12:%x %b,",
+			"\n 13:%x %b, 14:%x %b, 15:%x %b"}, 
+			r[0], inuse[0], r[1], inuse[1], r[2], inuse[2], r[3], inuse[3], r[4], inuse[4], 
+			r[5], inuse[5], r[6], inuse[6], r[7], inuse[7], r[8], inuse[8], r[9], inuse[9], 
+			r[10], inuse[10], r[11], inuse[11], r[12], inuse[12], r[13], inuse[13], r[14], inuse[14], r[15], inuse[15]);
 	end
 
 	/*

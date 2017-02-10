@@ -2,7 +2,7 @@
 	Module written by Rahul Kejriwal
 	CS14B023
 
-	Synchronous module to fetch instructions
+	Fetch unit test bench
 */
 
 `include "../Code/fetch.v"
@@ -23,7 +23,7 @@ module fetch_TestBench(
 	fetchInstruction I(clk, rst, instr_addr, instr, curr_instr);
 
 	always begin
-		#10 clk = ~clk;
+		#1 clk = ~clk;
 	end
 
 	initial begin
@@ -35,7 +35,7 @@ module fetch_TestBench(
 		instr = 0;
 	
 		$monitor($time,, "clk: %b, Address: %b, IR: %b, ISent: %b", clk, instr_addr, curr_instr, instr);
-		#50 $finish;
+		#550 $finish;
 	end
 
 	always @(instr_addr) begin

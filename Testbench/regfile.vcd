@@ -1,0 +1,97 @@
+$date
+	Sat Feb 11 00:17:01 2017
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module regfile_TestBench $end
+$var wire 1 ! storeDone $end
+$var wire 16 " srcRegVal2 [15:0] $end
+$var wire 16 # srcRegVal1 [15:0] $end
+$var wire 1 $ inuse2 $end
+$var wire 1 % inuse1 $end
+$var reg 1 & clk $end
+$var reg 4 ' destReg [3:0] $end
+$var reg 16 ( destVal [15:0] $end
+$var reg 4 ) nextDestReg [3:0] $end
+$var reg 1 * rst $end
+$var reg 4 + srcReg1 [3:0] $end
+$var reg 4 , srcReg2 [3:0] $end
+$var reg 1 - storeNow $end
+$scope module R $end
+$var wire 1 & clk $end
+$var wire 4 . destReg [3:0] $end
+$var wire 16 / destVal [15:0] $end
+$var wire 4 0 nextDestReg [3:0] $end
+$var wire 1 * rst $end
+$var wire 4 1 srcReg1 [3:0] $end
+$var wire 4 2 srcReg2 [3:0] $end
+$var wire 1 - storeNow $end
+$var reg 1 % inuse1 $end
+$var reg 1 $ inuse2 $end
+$var reg 16 3 srcRegVal1 [15:0] $end
+$var reg 16 4 srcRegVal2 [15:0] $end
+$var reg 1 ! storeDone $end
+$var integer 32 5 i [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+b10000 5
+b0 4
+b0 3
+b0 2
+b0 1
+b0 0
+b0 /
+b0 .
+0-
+b0 ,
+b0 +
+0*
+b0 )
+b0 (
+b0 '
+0&
+0%
+0$
+b0 #
+b0 "
+0!
+$end
+#5
+1!
+1-
+b100000000 (
+b100000000 /
+b11 '
+b11 .
+b10 )
+b10 0
+b1 ,
+b1 2
+1&
+#10
+0&
+#15
+1&
+#20
+0&
+#25
+1&
+#30
+0&
+#35
+1&
+#40
+0&
+#45
+1&
+#50
+0&
+#55
+1&
