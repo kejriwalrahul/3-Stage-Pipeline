@@ -65,7 +65,7 @@ module executeAndStoreBack(
 		destRegStore 		= 4'b0;
 		memAddrLoadStore	= 8'b0;
 		memValueStore		= 16'b0;
-		destVal				= 16'b0;
+		destVal		        = 16'b0;
 		
 		LastComputedValue   = 16'b0;
 		ProcessorStatusWord = 16'b0;
@@ -108,17 +108,20 @@ module executeAndStoreBack(
 
 			// ADD
 			 2: begin
-				 	{ProcessorStatusWord[15],destVal} = val1 + val2;
+				        {ProcessorStatusWord[15],destVal} = val1 + val2;
 				 	
-				 	if(val1[15] == val2[15] && destVal[15] != val1[15])
+				       if(val1[15] == val2[15] && destVal[15] != val1[15])
 				 		ProcessorStatusWord[14] = 1;
+				 
+				 
 			 	end
 
 			// SUB
 			 3: begin
 				 	{ProcessorStatusWord[15],destVal} = val1 - val2;
+			
 				 	
-				 	if(val1[15] != val2[15] && destVal[15] != val1[15])
+				       if(val1[15] != val2[15] && destVal[15] != val1[15])
 				 		ProcessorStatusWord[14] = 1;
 			 	end 
 			 
