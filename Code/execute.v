@@ -129,7 +129,7 @@ module executeAndStoreBack(
 			 4: begin
 				 	{ProcessorStatusWord[15],destVal} = val1 * val2;
 				 	
-					// To do: Detect overflow/underflow			 	
+						 	
 			 	end
 
 			// SL
