@@ -5,7 +5,7 @@
 	Execution unit test bench
 */
 
-`include "/home/debanjan/Desktop/DDV_pro/3-Stage-Pipeline/Code/execute.v"
+`include "../Code/execute.v"
 
 module execute_TestBench(
 		output clk,
