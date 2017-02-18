@@ -14,7 +14,7 @@ A Three Stage Pipeline 16-bit processor implemented in Verilog
 2. Run executable:
     `./a.out`
 3. View Waveforms:
-4.  `gtkwave processor.vcd`
+    `gtkwave processor.vcd`
 
 ## Instruction Format
 
