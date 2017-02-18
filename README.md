@@ -7,6 +7,15 @@ A Three Stage Pipeline 16-bit processor implemented in Verilog
 2. Find the work documenntation at:
     https://docs.google.com/document/d/1LWTGpOkcxlFyOM4ZgRy-z_-gj--4XCp7ZGnfy8bdTfU/edit?usp=sharing
     
+## Instructions
+
+1. Generate executable of main testbench from this directory:
+    `iverilog Testbench/processor_testbench.v`
+2. Run executable:
+    `./a.out`
+3. View Waveforms:
+4.  `gtkwave processor.vcd`
+
 ## Instruction Format
 
 For non-LOAD/STORE instructions
