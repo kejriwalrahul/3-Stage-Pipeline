@@ -166,7 +166,6 @@ module executeAndStoreBack(
 
 			// LOAD
 			14: begin
-					// $display("memAddr: %b", memAddr);
 					memAddrLoadStore = memAddr;
 					readReq = 1'b1;
 				end

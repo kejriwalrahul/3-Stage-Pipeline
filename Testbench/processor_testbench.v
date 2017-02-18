@@ -45,7 +45,7 @@ module processor_TestBench(
 	initial begin
 		$dumpfile("processor.vcd");
     	$dumpvars(0,processor_TestBench);
-		$monitor($time,, "Memlocval: %d", memory[130]);
+		$monitor($time,, "Memlocval: %b", memory[130]);
 
 		clk = 0;
 		rst = 0;
@@ -113,7 +113,7 @@ module processor_TestBench(
 	end
 
 	always @(posedge writeReq) begin
-		$display("Writing %d to %d", memStoreVal, memAddrLoadStore);
+		// $display("Writing %d to %d", memStoreVal, memAddrLoadStore);
 		memory[memAddrLoadStore] = memStoreVal;
 	end
 
