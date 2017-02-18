@@ -28,6 +28,7 @@ module executeAndStoreBack(
 		input[15:0] memValueLoad,
 		input valueReady,
 		output readReq,
+		output writeReq,
 
 		output[15:0] ProcessorStatusWord,
 	
@@ -41,7 +42,7 @@ module executeAndStoreBack(
 	reg[15:0] LastComputedValue;
 	reg[15:0] ProcessorStatusWord;
 
-	reg readReq, storeNow;
+	reg readReq, storeNow, writeReq;
 	reg[15:0] val1, val2;
 	reg powerdown;
 
@@ -77,13 +78,15 @@ module executeAndStoreBack(
 	end
 
 	always @(posedge clk) begin
-		ProcessorStatusWord = 16'b0;
-		
 		// Write Sync Signal for register writes
 		storeNow = 0;
+		writeReq = 0;
+		
+		#1
+		ProcessorStatusWord = 16'b0;
 
 		// Checking if src1 was being computed
-		if(used1)
+		#1 if(used1)
 			val1 = LastComputedValue;
 		else
 			val1 = srcVal1;			
@@ -95,41 +98,39 @@ module executeAndStoreBack(
 			val2 = srcVal2;			
 
 		// Execute appropriate action for the opcode
-		case(opcode)
+		#0 case(opcode)
 			// NOP
 			 0: begin
 			 		// Doing nothing
+			 		$display("Doing nothing");
 			 	end 
 
 			// HLT
 			 1: begin
+			 		$display("HLTing");
 			 		powerdown = 1;
 			 	end
 
 			// ADD
 			 2: begin
-				        {ProcessorStatusWord[15],destVal} = val1 + val2;
+			        {ProcessorStatusWord[15],destVal} = val1 + val2;
 				 	
-				       if(val1[15] == val2[15] && destVal[15] != val1[15])
-				 		ProcessorStatusWord[14] = 1;
-				 
-				 
+				    if(val1[15] == val2[15] && destVal[15] != val1[15])
+			 			ProcessorStatusWord[14] = 1;
 			 	end
 
 			// SUB
 			 3: begin
 				 	{ProcessorStatusWord[15],destVal} = val1 - val2;
-			
 				 	
-				       if(val1[15] != val2[15] && destVal[15] != val1[15])
+				    if(val1[15] != val2[15] && destVal[15] != val1[15])
 				 		ProcessorStatusWord[14] = 1;
 			 	end 
 			 
 			// MUL
 			 4: begin
 				 	{ProcessorStatusWord[15],destVal} = val1 * val2;
-				 	
-						 	
+				 							 	
 			 	end
 
 			// SL
@@ -137,7 +138,6 @@ module executeAndStoreBack(
 				 	{ProcessorStatusWord[15],destVal} = val1 << val2;		 	
 			 	end
 
-			 
 			// SR
 			 6: begin
 			 		{ProcessorStatusWord[15],destVal} = val1 >> val2;
@@ -166,19 +166,21 @@ module executeAndStoreBack(
 
 			// LOAD
 			14: begin
+					// $display("memAddr: %b", memAddr);
 					memAddrLoadStore = memAddr;
-					readReq = 1'b0;
+					readReq = 1'b1;
 				end
 
 			// STORE
 			15: begin
 					memAddrLoadStore = memAddr;
 					memValueStore = val1;
+					writeReq = 1;
 				end
 
 			default:begin
-					$display("Failure in execute unit!");
-					powerdown = 1;
+						$display("Failure in execute unit!");
+						powerdown = 1;
 					end
 		endcase
 
@@ -189,6 +191,8 @@ module executeAndStoreBack(
 
 		 	if(destVal == 0)
 				ProcessorStatusWord[13] = 1;	
+			
+			#1 LastComputedValue = destVal;
 		end
 	end
 
@@ -197,7 +201,11 @@ module executeAndStoreBack(
 		readReq = 1'b0;
 		destVal = memValueLoad;
 		if(destVal == 0)
-			ProcessorStatusWord[13] = 1;			
+			ProcessorStatusWord[13] = 1;		
+
+		destRegStore = destReg;
+		storeNow = 1;			
+		#1 LastComputedValue = destVal;
 	end
 
 endmodule

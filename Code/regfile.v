@@ -94,7 +94,10 @@ module RegisterFile(
 		Set inuse at posedge
 	*/
 	always @(posedge clk) begin
-		inuse[destReg] = 1'b0;
+		
+		for(i=0;i<16;i++)
+			inuse[i] = 1'b0;
+		
 		inuse[nextDestReg] = 1'b1;
 	end
 

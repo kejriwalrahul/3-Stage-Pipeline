@@ -23,6 +23,7 @@ module Processor(
 
 		input valueReady,
 		output readReq,
+		output writeReq,
 
 		output powerdown
 	);
@@ -54,7 +55,7 @@ module Processor(
 		opcode, destReg, srcVal1, srcVal2, memAddr, used1, used2,
 		destRegStore, destVal, storeNow, storeDone,
 		memAddrLoadStore, memStoreVal,
-		memLoadVal, valueReady, readReq,
+		memLoadVal, valueReady, readReq, writeReq,
 		pswWire, 
 		powerdown);
 

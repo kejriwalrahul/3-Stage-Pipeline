@@ -82,29 +82,31 @@ module decodeAndFetchOperands(
 		Operation Logic
 	*/
 	always @(posedge clk) begin
-		opcode 		= instr[ 0+:4];
+		#1
+		opcode 		= instr[ 12+:4];
+		// $display("Opcode %b", opcode);
 
 		// If LOAD instruction
 		if(opcode == 4'b1110) begin
 			memAddr		= instr[ 4+:8];
-			nextDestReg = instr[12+:4];
-			destReg 	= instr[12+:4];
+			nextDestReg = instr[ 0+:4];
+			destReg 	= instr[ 0+:4];
 		end
 		// If STORE instruction
 		else if(opcode == 4'b1111) begin
 			memAddr		= instr[ 4+:8];
-			nextDestReg = instr[12+:4];
-			destReg 	= instr[12+:4];			
+			nextDestReg = instr[ 0+:4];
+			destReg 	= instr[ 0+:4];			
 
 			// Send addr to regfile
-			srcReg1 	= instr[12+:4];
+			srcReg1 	= instr[ 0+:4];
 		end
 		// For other instructions
 		else begin
-			nextDestReg = instr[ 4+:4];
-			destReg 	= instr[ 4+:4];
-			srcReg1 	= instr[ 8+:4];
-			srcReg2 	= instr[12+:4];
+			nextDestReg = instr[ 8+:4];
+			destReg 	= instr[ 8+:4];
+			srcReg1 	= instr[ 4+:4];
+			srcReg2 	= instr[ 0+:4];
 		end
 	end
 

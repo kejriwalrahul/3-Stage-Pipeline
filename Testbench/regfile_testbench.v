@@ -1,6 +1,6 @@
 /*
-	Module written by Rahul Kejriwal
-	CS14B023
+	Module written by Bharat Sai
+	CS13B005
 
 	Register File Testbench 
 */
@@ -52,10 +52,10 @@ module regfile_TestBench(
 		destReg = 0;
 		destVal = 0;
 
-		$monitor($time,, {"clk: %b, srcReg1: %x, srcReg2: %x, nextDestReg: %x,", 
+		$monitor($time,, {"clk: %b,rst: %b, srcReg1: %x, srcReg2: %x, nextDestReg: %x,", 
 			"\n destReg: %x, destVal: %x, storeNow: %b, storeDone: %b",
 			"\nsrcRegVal1: %x, srcRegVal2: %x, inuse1: %b, inuse2: %b"}, 
-			clk, 
+			clk, rst,
 			srcReg1, srcReg2, nextDestReg, 
 			destReg, destVal, storeNow, storeDone, 
 			srcRegVal1, srcRegVal2, inuse1, inuse2);
@@ -69,7 +69,36 @@ module regfile_TestBench(
 		destVal = 256;
 		storeNow = 1;
 
-		#50 $finish;
+		#5
+		srcReg1 = 2;
+		
+		#5
+		srcReg2 = 3;
+
+		#5
+        nextDestReg = 4;
+
+		#5
+		destReg = 5;
+
+		#5
+        destVal = 128;
+
+		#5
+        storeNow = 0;
+
+		#5
+		rst = 1;
+
+		#5
+		srcReg1 = 0;
+		srcReg2 = 1;
+		nextDestReg = 2;
+		destReg = 3;
+		destVal = 256;
+		storeNow = 1;
+
+		#20 $finish;
 	end
 
 endmodule
