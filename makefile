@@ -1,7 +1,6 @@
 all: Code/processor.v Code/fetch.v Code/decoder.v Code/regfile.v Code/execute.v
-	mkdir -p bin
-	iverilog Code/processor.v -o bin/processor.out
+	iverilog Code/processor_testbench.v
+	./a.out
 
 clean:
-	rm -f bin/* 
-	rm -r bin
+	rm -f a.out *.vcd

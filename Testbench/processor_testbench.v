@@ -101,9 +101,6 @@ module processor_TestBench(
 
 	always @(instr_addr) begin
 		instr = memory[instr_addr];
-	
-		if(instr_addr == 33)
-			$finish;
 	end
 
 	always @(posedge readReq) begin
