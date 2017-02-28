@@ -189,7 +189,7 @@ module executeAndStoreBack(
 			//sending storenow signal to regfile unit
 			storeNow = 1;
 
-		 	if({ProcessorStatusWord[14], destVal} == 0)    	//checking whether the computed value was zero or not
+		 	if({ProcessorStatusWord[15], destVal} == 0)    	//checking whether the computed value was zero or not
 				ProcessorStatusWord[13] = 1;	        	//setting the zero status flag bit to 1
 			
 			#1 LastComputedValue = destVal;
