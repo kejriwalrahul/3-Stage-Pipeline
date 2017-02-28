@@ -5,7 +5,7 @@
 	Execution unit test bench
 */
 
-`include "../Code/execute.v"
+`include "/home/debanjan/Desktop/DDV_pro/3-Stage-Pipeline/Code/execute.v"
 
 module execute_TestBench(
 		output clk,
@@ -69,12 +69,57 @@ module execute_TestBench(
 	destReg=12;
 	used1=0;
 	used2=0;
+
+	#6
+	//for generating carry during addition
+	opcode=2;
+	srcVal1=49152;
+	srcVal2=65535;
+	destReg=68;
+	used1=0;
+	used2=0;
+
+	#6
+	//for generating overflow during addition
+	opcode=2;
+	srcVal1=65535;
+	srcVal2=32768;
+	destReg=69;
+	used1=0;
+	used2=0;
+
+	#6
+	//for setting zero status flag bit
+	opcode=2;
+	srcVal1=0;
+	srcVal2=0;
+	destReg=70;
+	used1=0;
+	used2=0;
 	
 	#6
 	opcode=3;
 	srcVal1=25;
 	srcVal2=9;
 	destReg=13;
+	used1=0;
+	used2=0;
+
+	#6
+	//for generating carry during substraction
+	opcode=3;
+	srcVal1=32768;
+	srcVal2=56;
+	destReg=71;
+	used1=0;
+	used2=0;
+
+	#6
+	//for generating overflow during substraction
+	opcode=3;
+	srcVal1=32768;
+	srcVal2=1;
+	destReg=72;
 	used1=0;
 	used2=0;
 
@@ -138,9 +183,17 @@ module execute_TestBench(
 	used1=0;
 	used2=0;
 
+	//loading value
 	#6
 	opcode=14;
 	memAddr=26;
+	destReg=80;
+
+	//storing value
+	#6
+	opcode=15;
+	memAddr=45;
+	srcVal1=789;
 	
 	#550 $finish;
        end
