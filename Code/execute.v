@@ -1,7 +1,6 @@
 /*
 	Module written by Rahul Kejriwal
 	CS14B023
-
 	Synchronous module for execution and result storage 
 */
 
@@ -115,7 +114,7 @@ module executeAndStoreBack(
 			 2: begin
 			        {ProcessorStatusWord[15],destVal} = val1 + val2;
 				 	
-				    if(val1[15] == val2[15] && destVal[15] != val1[15])
+				    if(val1[15] == val2[15] && destVal[15] != val1[15])  //checking for overflow in addition
 			 			ProcessorStatusWord[14] = 1;
 			 	end
 
@@ -123,7 +122,7 @@ module executeAndStoreBack(
 			 3: begin
 				 	{ProcessorStatusWord[15],destVal} = val1 - val2;
 				 	
-				    if(val1[15] != val2[15] && destVal[15] != val1[15])
+				    if(val1[15] != val2[15] && destVal[15] != val1[15])   //checking for overflow in substraction
 				 		ProcessorStatusWord[14] = 1;
 			 	end 
 			 
@@ -166,15 +165,15 @@ module executeAndStoreBack(
 
 			// LOAD
 			14: begin
-					memAddrLoadStore = memAddr;
-					readReq = 1'b1;
+					memAddrLoadStore = memAddr;    //storing memory address to memAddrLoadStore register
+					readReq = 1'b1;                //sending a read request to memory
 				end
 
 			// STORE
 			15: begin
 					memAddrLoadStore = memAddr;
-					memValueStore = val1;
-					writeReq = 1;
+					memValueStore = val1;          //storing the value to be stored in memValueStore
+					writeReq = 1;                  //sending a write request to memory
 				end
 
 			default:begin
@@ -185,11 +184,13 @@ module executeAndStoreBack(
 
 		// Set register address to write to and send signal to write to reg file
 		if(opcode >= 2 && opcode <= 10) begin
+			//storing the dest reg address to destRegStore
 			destRegStore = destReg;
+			//sending storenow signal to regfile unit
 			storeNow = 1;
 
-		 	if(destVal == 0)
-				ProcessorStatusWord[13] = 1;	
+		 	if({ProcessorStatusWord[14], destVal} == 0)    	//checking whether the computed value was zero or not
+				ProcessorStatusWord[13] = 1;	        	//setting the zero status flag bit to 1
 			
 			#1 LastComputedValue = destVal;
 		end
@@ -198,10 +199,14 @@ module executeAndStoreBack(
 	// Sent signal to read mem location. Waiting for signal that value is ready.
 	always @(posedge valueReady) begin
 		readReq = 1'b0;
+		
+		//getting the value loaded from memory into destVal
 		destVal = memValueLoad;
-		if(destVal == 0)
-			ProcessorStatusWord[13] = 1;		
-
+		if(destVal == 0)              						//checking whether the computed value was zero or not
+			ProcessorStatusWord[13] = 1;	                //setting the zero status flag bit to 1
+	        
+		
+		//storing the loaded value into the destination register
 		destRegStore = destReg;
 		storeNow = 1;			
 		#1 LastComputedValue = destVal;
