@@ -65,6 +65,7 @@ module decodeAndFetchOperands(
 		Zero all registers on reset
 	*/
 	always @(posedge rst) begin
+		#2
 		srcReg1 	= 4'b0; 	
 		srcReg2 	= 4'b0; 	
 		nextDestReg = 4'b0; 	

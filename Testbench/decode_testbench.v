@@ -43,7 +43,18 @@ module decode_TestBench(
 	reg inuse1;
 	reg inuse2;
 	
-	decodeAndFetchOperands daf(clk, rst, instr, srcRegVal1, srcRegVal2, inuse1, inuse2, srcReg1, srcReg2, nextDestReg, opcode, destReg, srcVal1, srcVal2, memAddr, used1, used2);
+	decodeAndFetchOperands daf(clk, rst, 
+		instr, 
+		srcRegVal1, srcRegVal2, inuse1, inuse2, 
+		srcReg1, srcReg2, nextDestReg, 
+		opcode, destReg, srcVal1, srcVal2, memAddr, used1, used2);
+
+	initial begin
+		srcRegVal1 = 0;
+		srcRegVal2 = 0;
+		inuse1 = 0;
+		inuse2 = 0;
+	end
 
 	always begin
 		#5 clk = ~clk;
@@ -57,17 +68,19 @@ module decode_TestBench(
 		rst = 0;
 		instr = 0;
 	
-		$monitor($time,, "clk: %b, Instruction: %b, Opcode: %b, MemAddr: %b,srcRegVal1: %b,srcRegVal2: %b,inuse1: %d,inuse2: %d ", clk, instr, opcode, memAddr,srcRegVal1,srcRegVal2,inuse1,inuse2);
+		$monitor($time,, "clk: %b, rst: %b, Instruction: %b, Opcode: %b, MemAddr: %b, srcReg1: %b, srcReg2: %b, srcRegVal1: %b, srcRegVal2: %b, inuse1: %d, inuse2: %d ", 
+			clk, rst, instr, opcode, memAddr, srcReg1, srcReg2, srcRegVal1, srcRegVal2, inuse1, inuse2);
 		
+		// sample ins
 		#5 
-		instr = 16'b0010001100110001;                       // sample ins
+		instr = 16'b0010001100110001;                       
 		srcRegVal1 = 40;
 		srcRegVal2 = 50;
 		inuse1 =0;
 		inuse2=0;
 		rst = 0;
-		#10
 		
+		#10
 		instr = 16'b0010001100111000;                    //changing op code.
 
 		#10
@@ -133,8 +146,8 @@ module decode_TestBench(
 		#10
 		rst = 1;
 
-		#10					                   //load 
-		instr = 16'b1110011111101110;	
+		#10					                   
+		instr = 16'b1110011111101110;			//load 
 
 		#10                                                         
 		instr = 16'b1111011111101110;
@@ -163,4 +176,93 @@ module decode_TestBench(
 		#10 
 		$finish;
 	end
+
+	/*
+		System Verilog Assertions
+		-------------------------
+
+		Added by Rahul Kejriwal, CS14B023
+	*/
+
+
+	/*
+		Assert correct opcode is forwarded
+	*/
+	property P1;		
+		@(posedge clk) (!$rose(rst)) |-> opcode == instr[15:12]; 
+	endproperty
+
+	OpcodeForward:
+		assert property(P1)
+		else $display("Failure at OpcodeForward");
+
+	/*
+		Assert forwarding of fetched data for non-LOAD/STORE instructions 
+	*/
+	property P2;
+		@(posedge clk) (!$rose(rst) and instr[15:12] != 4'b1110 and instr[15:12] != 4'b1111) |->
+					   nextDestReg == instr[11:8] and destReg == instr[11:8]  
+					   and srcReg1 == instr[ 7:4] and srcReg2 == instr[ 3:0];
+	endproperty
+
+	NonLoadStoreDecode:
+		assert property(P2)
+		else $display("Failure at NonLoadStoreDecode");
+
+	/*
+		Assert forwarding of fetched data for LOAD instructions
+	*/
+	property P3;
+		@(posedge clk) (!$rose(rst) and instr[15:12] == 4'b1110) |->
+					   nextDestReg == instr[ 3:0] and destReg == instr[ 3:0]
+					   and memAddr == instr[11:4];
+	endproperty
+
+	LoadDecode:
+		assert property(P3)
+		else $display("Failure at LoadDecode");
+
+	/*
+		Assert forwarding of fetched data for STORE instructions
+	*/
+	property P4;
+		@(posedge clk)  (!$rose(rst)) |->
+						(instr[15:12] == 4'b1111) |->
+						srcReg1 == instr[ 3:0] and memAddr == instr[11:4];
+	endproperty
+
+	StoreDecode:
+		assert property(P4)
+		else $display("Failure at StoreDecode");
+
+	/*
+		Assert forwarding of fetched data from Register File
+	*/
+	property P5;
+		@(posedge clk) (!$rose(rst)) |->
+					   srcVal1 == srcRegVal1 and srcVal2 == srcRegVal2
+					   and used1 == inuse1 and used2 == inuse2;
+	endproperty
+
+	RegFileDataForward:
+		assert property(P5)
+		else $display("Failure at RegFileDataForward");
+
+	property P6;
+		@(posedge clk) $rose(rst) |-> srcReg1 == 4'b0					
+					and srcReg2 == 4'b0 	
+					and nextDestReg == 4'b0 	
+					and opcode	== 4'b0
+					and destReg	== 4'b0
+					and srcVal1 == 16'b0
+					and srcVal2 == 16'b0
+					and memAddr == 8'b0
+					and used1	== 0
+					and used2	== 0;
+	endproperty
+
+	ResetProperty:
+		assert property(P6)
+		else $display("Failure at ResetProperty");
+
 endmodule
