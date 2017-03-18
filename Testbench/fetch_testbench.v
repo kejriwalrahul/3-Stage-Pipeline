@@ -41,4 +41,59 @@ module fetch_TestBench(
 	always @(instr_addr) begin
 		instr = instr_addr << 8 | instr_addr ^ 8'b11111111;
 	end 
+
+
+	/*
+		System Verilog Assertions
+		-------------------------
+	*/
+
+
+	/*
+		Assert reset conditions
+	*/
+	property P1;
+      @(posedge rst) (instr_addr == 8'b0 and curr_instr	== 16'b0);
+	endproperty
+
+	Reset:
+  		assert property(P1)
+        else $display("Failure at Reset");
+    
+    /*
+    	Assert incrementing of PC mod 2**8
+    */
+    property P2;
+      reg[7:0] prev_progctr;
+      
+      @(posedge clk) (1,prev_progctr = instr_addr) ##1 (instr_addr == ((prev_progctr + 1)&8'b11111111)); 
+	endproperty
+
+	PCIncrement:
+        assert property(P2)
+          else $display("Failure at PCIncrement");
+    
+    /*
+    	Assert forwarding of retrieved instr
+    */
+    property P3;
+      reg[15:0] old_instr;
+      
+      @(posedge clk) (1, old_instr = instr) ##1 curr_instr == old_instr;
+    endproperty
+          
+    InstrForward:
+          assert property(P3)
+            else $display("Failure at InstrForward");  
+
+	/*
+		Assert loop back of address to 0 after 255
+	*/	        	       
+	property P4;
+      @(posedge clk) instr_addr == 8'b11111111 |-> ##1 instr_addr == 8'b0;
+    endproperty
+            
+    AddrLoopBack:
+        assert property(P4)
+        else $display("Failure at AddrLoopBack");
 endmodule
