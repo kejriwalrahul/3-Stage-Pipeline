@@ -1,3 +1,5 @@
+// Code your testbench here
+// or browse Examples
 /*
 	Module written by Debanjan Ghatak
 	CS16S033
@@ -5,7 +7,9 @@
 	Execution unit test bench
 */
 
-`include "/home/debanjan/Desktop/DDV_pro/3-Stage-Pipeline/Code/execute.v"
+
+
+
 
 module execute_TestBench(
 		output clk,
@@ -197,5 +201,237 @@ module execute_TestBench(
 	
 	#550 $finish;
        end
+  /* we are assuming srcVal1 and srcVal2 are correctly copied to val1 and val2 */
+property P1;
+     reg[15:0] val1,val2;
+     
+     @(posedge clk) (1, val1=srcVal1, val2=srcVal2);
+         
+				
+	endproperty
+
+	Initialise:
+  assert property(P1)
+    
+    else $display("Failure at initialisation");
+  
+    	property P2;
 		
+		
+          @(posedge clk) (opcode == 4'b0010) |->
+          
+          ##0 (	{ProcessorStatusWord[15],destVal} == executeAndStoreBack.val1 + executeAndStoreBack.val2 );
+				
+endproperty
+
+	ADD_NO:
+    assert property(P2)
+      else $display("Failure at ADD without overflow");
+  
+property P3;
+		
+		
+        @(posedge clk) (opcode == 4'b0010 and executeAndStoreBack.val1[15] == executeAndStoreBack.val2[15] && destVal[15] != executeAndStoreBack.val1[15]) |->
+        
+        ##0 (	{ProcessorStatusWord[15],destVal} == executeAndStoreBack.val1 + executeAndStoreBack.val2 and ProcessorStatusWord[14] == 1);
+				
+endproperty
+
+	ADD_O:
+      assert property(P3)
+      else $display("Failure at ADD with overflow");
+  
+      property P4;
+		
+		
+        @(posedge clk) (opcode == 4'b0011) |->
+          
+        ##0 (	{ProcessorStatusWord[15],destVal} == executeAndStoreBack.val1 - executeAndStoreBack.val2 );
+				
+endproperty
+
+	SUB_NO:
+        assert property(P4)
+          else $display("Failure at SUB without overflow");
+  
+property P5;
+		
+		
+  @(posedge clk) (opcode == 4'b0011 and executeAndStoreBack.val1[15] != executeAndStoreBack.val2[15] && destVal[15] != executeAndStoreBack.val1[15]) |->
+        
+  ##0 ({ProcessorStatusWord[15],destVal}== executeAndStoreBack.val1 - executeAndStoreBack.val2 and ProcessorStatusWord[14] == 1);
+				
+endproperty
+
+	SUB_O:
+          assert property(P5)
+            else $display("Failure at SUB with overflow");
+  
+       property P6;
+		
+		
+         @(posedge clk) (opcode == 4'b0100) |->
+          
+         ##0 (	{ProcessorStatusWord[15],destVal} == executeAndStoreBack.val1 * executeAndStoreBack.val2 );
+				
+endproperty
+
+	MUL:
+            assert property(P6)
+              else $display("Failure at MUL");
+              
+    property P7;
+		
+		
+      @(posedge clk) (opcode == 4'b0101) |->
+          
+      ##0 (	{ProcessorStatusWord[15],destVal} == executeAndStoreBack.val1 << executeAndStoreBack.val2 );
+				
+endproperty
+
+	SL:
+              assert property(P7)
+                else $display("Failure at SL");   
+                
+   property P8;
+		
+		
+     @(posedge clk) (opcode == 4'b0110) |->
+          
+     ##0 (	{ProcessorStatusWord[15],destVal} == executeAndStoreBack.val1 >> executeAndStoreBack.val2 );
+				
+endproperty
+
+	SR:
+                assert property(P8)
+                  else $display("Failure at SR");   
+                  
+   property P9;
+		
+		
+     @(posedge clk) (opcode == 4'b0111) |->
+          
+     ##0 ( destVal== (executeAndStoreBack.val1 & executeAndStoreBack.val2));
+				
+endproperty
+
+	AND:
+                  assert property(P9)
+                    else $display("Failure at AND");  
+                    
+   property P10;
+		
+		
+     @(posedge clk) (opcode == 4'b1000) |->
+          
+     ##0 ( destVal== (executeAndStoreBack.val1 | executeAndStoreBack.val2));
+				
+endproperty
+
+	OR:
+                    assert property(P10)
+                      else $display("Failure at OR"); 
+                      
+   property P11;
+		
+		
+     @(posedge clk) (opcode == 4'b1001) |->
+          
+     ##0 ( destVal== ~(executeAndStoreBack.val1));
+				
+endproperty
+
+	NEG:
+                      assert property(P11)
+                        else $display("Failure at NEG"); 
+                        
+   property P12;
+		
+		
+     @(posedge clk) (opcode == 4'b1010) |->
+          
+     ##0 ( destVal== (executeAndStoreBack.val1 ^ executeAndStoreBack.val2));
+				
+endproperty
+
+	XOR:
+                        assert property(P12)
+                          else $display("Failure at XOR");  
+                          
+ 	 property P13;	
+		
+       @(posedge clk) (opcode == 4'b1110) |->
+          
+       ##0 ( memAddrLoadStore == memAddr and readReq == 1'b1);
+				
+endproperty
+
+	LOAD:
+                          assert property(P13)
+                        else $display("Failure at LOAD");  
+        
+         property P14;	
+		
+           @(posedge clk) (opcode == 4'b1111) |->
+          
+           ##0 ( memAddrLoadStore == memAddr and memValueStore == executeAndStoreBack.val1 and writeReq == 1);
+				
+endproperty
+
+	STORE:
+                            assert property(P14)
+                              else $display("Failure at STORE");   
+                          
+    property P15;	
+		
+     @(posedge clk) (opcode != 4'b0000 and opcode != 4'b0001 and opcode != 4'b1110 and opcode != 4'b1111 ) |->
+          
+           ##0 ( destRegStore == destReg and storeNow == 1 and executeAndStoreBack.LastComputedValue == destVal);
+				
+                endproperty
+
+	NON_LOAD_STORE:
+                              assert property(P15)
+                              else $display("Failure at NON_LOAD_STORE");                                          
+        
+                              
+      property P16;	
+		
+           @(posedge clk) (opcode != 4'b0000 and opcode != 4'b0001 and opcode != 4'b1110 and opcode != 4'b1111 and {ProcessorStatusWord[15], destVal} == 0) |->
+          
+           ##0 (ProcessorStatusWord[13] == 1);
+				
+                endproperty
+
+	NON_LOAD_STORE_if:
+                                assert property(P16)
+                                else $display("Failure at NON_LOAD_STORE_if"); 
+                                
+    property P17;	
+		
+      @(posedge valueReady)
+          
+      ##1 ( destVal == memValueLoad and readReq == 1 and destRegStore == destReg and storeNow == 1 and executeAndStoreBack.LastComputedValue == destVal);
+      
+     // ##1(executeAndStoreBack.LastComputedValue == destVal);
+                endproperty
+
+	VAL_READY:
+                                  assert property(P17)
+                                    else $display("Failure at VAL_READY");                                          
+        
+                              
+      property P18;	
+		
+        @(posedge valueReady) (destVal == 0) |->
+          
+           ##0 (ProcessorStatusWord[13] == 1);
+				
+                endproperty
+
+	VAL_READYIF:
+                                    assert property(P18)
+                                  else $display("Failure at VAL_READYIF"); 
+                                
+                       
 endmodule
