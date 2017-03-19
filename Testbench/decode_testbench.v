@@ -201,8 +201,8 @@ module decode_TestBench(
 	*/
 	property P2;
 		@(posedge clk) (!$rose(rst) and instr[15:12] != 4'b1110 and instr[15:12] != 4'b1111) |->
-					   nextDestReg == instr[11:8] and destReg == instr[11:8]  
-					   and srcReg1 == instr[ 7:4] and srcReg2 == instr[ 3:0];
+					   (nextDestReg == instr[11:8] and destReg == instr[11:8]  
+					   and srcReg1 == instr[ 7:4] and srcReg2 == instr[ 3:0]);
 	endproperty
 
 	NonLoadStoreDecode:
@@ -214,8 +214,8 @@ module decode_TestBench(
 	*/
 	property P3;
 		@(posedge clk) (!$rose(rst) and instr[15:12] == 4'b1110) |->
-					   nextDestReg == instr[ 3:0] and destReg == instr[ 3:0]
-					   and memAddr == instr[11:4];
+					   (nextDestReg == instr[ 3:0] and destReg == instr[ 3:0]
+					   and memAddr == instr[11:4]);
 	endproperty
 
 	LoadDecode:
@@ -228,7 +228,7 @@ module decode_TestBench(
 	property P4;
 		@(posedge clk)  (!$rose(rst)) |->
 						(instr[15:12] == 4'b1111) |->
-						srcReg1 == instr[ 3:0] and memAddr == instr[11:4];
+						(srcReg1 == instr[ 3:0] and memAddr == instr[11:4]);
 	endproperty
 
 	StoreDecode:
@@ -240,16 +240,19 @@ module decode_TestBench(
 	*/
 	property P5;
 		@(posedge clk) (!$rose(rst)) |->
-					   srcVal1 == srcRegVal1 and srcVal2 == srcRegVal2
-					   and used1 == inuse1 and used2 == inuse2;
+					   (srcVal1 == srcRegVal1 and srcVal2 == srcRegVal2
+					   and used1 == inuse1 and used2 == inuse2);
 	endproperty
 
 	RegFileDataForward:
 		assert property(P5)
 		else $display("Failure at RegFileDataForward");
 
+	/*
+		Assert reset properties
+	*/
 	property P6;
-		@(posedge clk) $rose(rst) |-> srcReg1 == 4'b0					
+		@(posedge clk) $rose(rst) |-> (srcReg1 == 4'b0					
 					and srcReg2 == 4'b0 	
 					and nextDestReg == 4'b0 	
 					and opcode	== 4'b0
@@ -258,7 +261,7 @@ module decode_TestBench(
 					and srcVal2 == 16'b0
 					and memAddr == 8'b0
 					and used1	== 0
-					and used2	== 0;
+					and used2	== 0);
 	endproperty
 
 	ResetProperty:
